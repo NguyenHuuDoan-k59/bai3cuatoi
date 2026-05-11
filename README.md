@@ -1,6 +1,7 @@
 # QUẢN LÝ CẦM ĐỒ - THIẾT KẾ VÀ CÀI ĐẶT CƠ SỞ DỮ LIỆU
 
 Họ và tên: Nguyễn Hữu Doan
+
 MSSV: K235480106008
 
 ## 1. Mô tả bài toán
@@ -94,11 +95,14 @@ USE quanLyCamDo;
 GO
 ```
 
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/50393f01-6bc1-47b6-ba10-30d63130459f" />
+Tạo cơ sở dữ liệu quản lý cầm đồ
 
 
-```sql
+
 5. Tạo bảng khachHang
 
+```sql
 CREATE TABLE khachHang (
     khachHangId INT IDENTITY(1,1) PRIMARY KEY,         -- Khóa chính khách hàng
     hoTen NVARCHAR(100) NOT NULL,                      -- Họ tên khách hàng
@@ -108,13 +112,18 @@ CREATE TABLE khachHang (
     ngayTao DATETIME NOT NULL DEFAULT GETDATE()        -- Thời điểm tạo hồ sơ
 );
 GO
+```*
+
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/74286224-9054-44cb-9ffb-e0e9f212fa83" />
+
 Giải thích
 Bảng này dùng để lưu toàn bộ thông tin khách hàng.
 
 soDienThoai và canCuocCongDan được đặt UNIQUE để tránh nhập trùng dữ liệu.
 
-6. Tạo bảng nhanVien
 
+6. Tạo bảng nhanVien
+```sql
 CREATE TABLE nhanVien (
     nhanVienId INT IDENTITY(1,1) PRIMARY KEY,          -- Khóa chính nhân viên
     hoTen NVARCHAR(100) NOT NULL,                      -- Họ tên nhân viên
@@ -123,11 +132,17 @@ CREATE TABLE nhanVien (
     ngayTao DATETIME NOT NULL DEFAULT GETDATE()        -- Ngày tạo
 );
 GO
+```
+
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/1630b826-0d14-4939-8fcf-8977121f9903" />
+
+
 Giải thích
 Bảng này dùng để lưu nhân viên thu tiền hoặc quản lý giao dịch.
 
 7. Tạo bảng hopDong
 
+```sql
 CREATE TABLE hopDong (
     hopDongId INT IDENTITY(1,1) PRIMARY KEY,            -- Khóa chính hợp đồng
     khachHangId INT NOT NULL,                           -- Khóa ngoại tham chiếu khách hàng
@@ -143,14 +158,11 @@ CREATE TABLE hopDong (
         FOREIGN KEY (khachHangId) REFERENCES khachHang(khachHangId)
 );
 GO
-Giải thích
-Đây là bảng trung tâm của hệ thống, lưu:
+```
 
-khách hàng vay
-số tiền vay gốc
-ngày lập hợp đồng
-hai mốc deadline
-trạng thái hợp đồng hiện tại
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/f637ef0a-4002-43a8-97fb-562292b7ce6c" />
+
+```sql
 8. Tạo bảng taiSan
 
 CREATE TABLE taiSan (
@@ -163,11 +175,6 @@ CREATE TABLE taiSan (
     ngayTao DATETIME NOT NULL DEFAULT GETDATE()             -- Ngày tạo tài sản
 );
 GO
-Trạng thái tài sản
-DangCamCo
-DaTraKhach
-SanSangThanhLy
-DaBanThanhLy
 9. Tạo bảng chiTietHopDongTaiSan
 
 CREATE TABLE chiTietHopDongTaiSan (
@@ -185,11 +192,6 @@ CREATE TABLE chiTietHopDongTaiSan (
         FOREIGN KEY (taiSanId) REFERENCES taiSan(taiSanId)
 );
 GO
-Giải thích
-Bảng này biểu diễn quan hệ:
-
-một hợp đồng có nhiều tài sản
-mỗi tài sản gắn vào một hợp đồng trong một giao dịch cầm cố cụ thể
 10. Tạo bảng lichSuThanhToan
 
 CREATE TABLE lichSuThanhToan (
@@ -207,29 +209,26 @@ CREATE TABLE lichSuThanhToan (
         FOREIGN KEY (nhanVienId) REFERENCES nhanVien(nhanVienId)
 );
 GO
-Giải thích
-Bảng này là bảng log phục vụ:
+```
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/586ce946-97b8-473a-8a8e-6867fc8c3b9e" />
 
-lưu dấu vết dòng tiền
-hỗ trợ đối soát
-hỗ trợ tính tổng số tiền đã trả
-tránh mất lịch sử thanh toán
+Tạo các bảng thanh toán
+
 11. Chèn dữ liệu mẫu vào bảng khachHang
 
+```sql
 INSERT INTO khachHang (hoTen, soDienThoai, canCuocCongDan, diaChi)
 VALUES
 (N'Nguyen Van A', '0901000001', '001001000001', N'Ha Noi'),
 (N'Tran Thi B',  '0901000002', '001001000002', N'Hai Phong'),
 (N'Le Van C',    '0901000003', '001001000003', N'Da Nang');
 GO
-12. Chèn dữ liệu mẫu vào bảng nhanVien
 
 INSERT INTO nhanVien (hoTen, soDienThoai, chucVu)
 VALUES
 (N'Pham Thu Ngan', '0912000001', N'ThuNgan'),
 (N'Hoang Minh Duc', '0912000002', N'QuanLy');
 GO
-13. Chèn dữ liệu mẫu vào bảng hopDong
 
 INSERT INTO hopDong (khachHangId, ngayLap, soTienGoc, deadline1, deadline2, trangThai, ghiChu)
 VALUES
@@ -237,7 +236,6 @@ VALUES
 (2, '2026-05-02', 15000000, '2026-05-12', '2026-05-22', N'DangVay', N'Cam laptop'),
 (3, '2026-05-03', 8000000,  '2026-05-13', '2026-05-23', N'DangVay', N'Cam dien thoai');
 GO
-14. Chèn dữ liệu mẫu vào bảng taiSan
 
 INSERT INTO taiSan (tenTaiSan, loaiTaiSan, giaTriDinhGia, moTa, trangThai)
 VALUES
@@ -246,7 +244,6 @@ VALUES
 (N'iPhone 14 Pro Max', N'DienThoai', 22000000, N'Ban 256GB', N'DangCamCo'),
 (N'Day chuyen vang 18K', N'TrangSuc', 12000000, N'Trong luong 2 chi', N'DangCamCo');
 GO
-15. Chèn dữ liệu mẫu vào bảng chiTietHopDongTaiSan
 
 INSERT INTO chiTietHopDongTaiSan (hopDongId, taiSanId, giaTriCamCo, daTraKhach, ngayTraKhach)
 VALUES
@@ -255,7 +252,7 @@ VALUES
 (3, 3, 22000000, 0, NULL),
 (3, 4, 12000000, 0, NULL);
 GO
-16. Chèn dữ liệu mẫu vào bảng lichSuThanhToan
+
 
 INSERT INTO lichSuThanhToan (hopDongId, ngayThanhToan, soTienTra, nhanVienId, ghiChu)
 VALUES
@@ -263,6 +260,13 @@ VALUES
 (1, '2026-05-08 15:00:00', 500000, 1, N'Khach tra lan 2'),
 (2, '2026-05-09 10:00:00', 2000000, 2, N'Khach tra mot phan');
 GO
+
+```
+
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/c67184e6-78c4-4430-a38f-ee5546fa4d1b" />
+
+Chèn dữ liệu mẫu
+
 17. Stored Procedure đăng ký hợp đồng mới
 17.1. Phân tích logic
 Khi tạo hợp đồng mới, hệ thống cần:
@@ -281,6 +285,7 @@ Có thể mở rộng sau này để hỗ trợ nhiều tài sản trong 1 lần
 
 17.2. Procedure
 
+```sql 
 CREATE OR ALTER PROCEDURE spDangKyHopDongMoi
     @hoTen NVARCHAR(100),
     @soDienThoai VARCHAR(20),
@@ -339,6 +344,9 @@ BEGIN
         @taiSanId AS taiSanId;
 END;
 GO
+```
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/2e671a25-e87f-4bcb-8005-f6af98d0863b" />
+
 17.3. Ví dụ gọi procedure
 
 EXEC spDangKyHopDongMoi
@@ -355,6 +363,9 @@ EXEC spDangKyHopDongMoi
     @giaTriDinhGia = 15000000,
     @moTaTaiSan = N'Nhan 1 chi';
 GO
+
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/4ac400e0-21b2-41cb-9d85-03e80c7c67d0" />
+
 18. Function tính tiền phải trả đến ngày bất kỳ
 18.1. Phân tích logic
 Ta cần tính số tiền phải trả của hợp đồng tại một ngày cụ thể:
@@ -446,6 +457,9 @@ BEGIN
     RETURN @tongTien;
 END;
 GO
+
+<img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/95ac3197-cd51-4f3c-861a-8fd38d78b918" />
+
 18.3. Ví dụ sử dụng function
 
 SELECT dbo.fnTinhTienHopDong(1, '2026-05-09') AS tongTienPhaiTra;
@@ -453,6 +467,11 @@ GO
 
 SELECT dbo.fnTinhTienHopDong(1, GETDATE()) AS tongTienHienTai;
 GO
+
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/16eb48ac-384b-4da8-8843-93f30097e4b4" />
+
+
+
 19. Procedure xử lý trả nợ từng phần
 19.1. Phân tích logic
 Khi khách mang tiền đến trả, hệ thống xử lý theo các bước:
@@ -471,6 +490,7 @@ cập nhật hợp đồng thành DangTraGop
 trả về danh sách tài sản có thể hoàn trả cho khách
 19.2. Procedure
 
+```sql
 CREATE OR ALTER PROCEDURE spXuLyTraNoTungPhan
     @hopDongId INT,
     @soTienTra DECIMAL(18,2),
@@ -588,6 +608,9 @@ BEGIN
     WHERE (t.tongGiaTriConGiu - g.giaTriCamCo) >= @duNoConLai;
 END;
 GO
+```
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/c382c93f-f5a0-4985-9c85-4beb7bbcc9c7" />
+
 19.3. Ví dụ gọi procedure
 
 EXEC spXuLyTraNoTungPhan
@@ -596,6 +619,10 @@ EXEC spXuLyTraNoTungPhan
     @nhanVienId = 1,
     @ghiChu = N'Khach tra them dot tiep theo';
 GO
+
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/7a4c4d6b-423e-48e6-b26a-627c3bea2e16" />
+Gọi spXuLyTraNoTungPhan
+
 20. Query danh sách nợ xấu
 20.1. Phân tích logic
 Nợ xấu là các hợp đồng:
@@ -619,8 +646,13 @@ WHERE CAST(GETDATE() AS DATE) > hd.deadline1
   AND dbo.fnTinhTienHopDong(hd.hopDongId, CAST(GETDATE() AS DATE)) > 0
   AND hd.trangThai NOT IN (N'DaThanhToan', N'DaThanhLy');
 GO
+
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/16f6a1c1-3804-4d52-a123-eaffc8e5bc97" />
+Danh sách nợ xấu
 21. Trigger cập nhật trạng thái quá hạn và thanh lý
+
 21.1. Lưu ý
+
 Trong SQL Server, trigger không tự chạy chỉ vì thời gian trôi qua.
 
 Trigger chỉ chạy khi có thao tác:
@@ -636,6 +668,7 @@ Nếu muốn hoàn toàn tự động theo giờ/ngày trong thực tế, nên d
 
 21.2. Trigger cập nhật hợp đồng sang QuaHan
 
+```sql
 CREATE OR ALTER TRIGGER trgCapNhatHopDongQuaHan
 ON hopDong
 AFTER INSERT, UPDATE
@@ -654,8 +687,13 @@ BEGIN
       AND hd.trangThai IN (N'DangVay', N'DangTraGop');
 END;
 GO
+```
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/22b63ece-9c69-42ce-95ce-43cdc8ffb092" />
+Trigger cập nhật hợp đồng sang QuaHan
+
 21.3. Trigger cập nhật tài sản sang SanSangThanhLy
 
+```sql
 CREATE OR ALTER TRIGGER trgCapNhatTaiSanSanSangThanhLy
 ON hopDong
 AFTER INSERT, UPDATE
@@ -675,8 +713,13 @@ BEGIN
       AND ts.trangThai = N'DangCamCo';
 END;
 GO
+```
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/4c72f9aa-40e6-49b3-9800-4e100eeee9e8" />
+Trigger cập nhật tài sản sang SanSangThanhLy
+
 21.4. Trigger cập nhật tài sản sang DaBanThanhLy
 
+```sql
 CREATE OR ALTER TRIGGER trgCapNhatTaiSanDaBanThanhLy
 ON hopDong
 AFTER UPDATE
@@ -695,87 +738,194 @@ BEGIN
       AND d.trangThai <> N'DaThanhLy';
 END;
 GO
-22. Các truy vấn kiểm tra dữ liệu
-22.1. Xem khách hàng
+```
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/e854119a-7c62-4011-86c4-80c57d7d7507" />
 
-SELECT * FROM khachHang;
+Trigger cập nhật tài sản sang DaBanThanhLy
+
+### Xử lý gia hạn hợp đồng
+
+#### Ý tưởng xử lý
+
+Gia hạn hợp đồng là tình huống khách hàng không trả gốc, mà chỉ thanh toán **toàn bộ tiền lãi đang phát sinh đến thời điểm hiện tại** để dời kỳ hạn mới.
+
+Cách xử lý gồm các bước:
+
+- lấy thông tin hợp đồng
+- tính tổng nợ hiện tại
+- xác định phần lãi phải trả = tổng nợ hiện tại - số tiền gốc còn lại
+- nếu khách thanh toán đủ phần lãi:
+  - ghi nhận thanh toán vào `lichSuThanhToan`
+  - cập nhật `deadline1` mới
+  - cập nhật `deadline2` mới
+  - chuyển trạng thái hợp đồng về `DangVay` nếu trước đó chưa bị thanh lý
+- nếu không đủ:
+  - từ chối gia hạn
+
+> Ghi chú: Trong phiên bản hiện tại, phần gốc còn lại được xác định bằng `soTienGoc - tongSoTienDaTraVaoGoc` theo hướng đơn giản hóa. Vì hệ thống đang ưu tiên trừ toàn bộ thanh toán vào tổng nợ, nên khi áp dụng thực tế có thể cần bóc tách rõ phần tiền nào trả vào lãi, phần nào trả vào gốc.
+
+#### Procedure gia hạn hợp đồng
+
+```sql
+CREATE OR ALTER PROCEDURE spGiaHanHopDong
+    @hopDongId INT,
+    @soNgayGiaHanDeadline1 INT,
+    @soNgayGiaHanDeadline2 INT,
+    @soTienKhachTra DECIMAL(18,2),
+    @nhanVienId INT,
+    @ghiChu NVARCHAR(255) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @soTienGoc DECIMAL(18,2);
+    DECLARE @tongNoHienTai DECIMAL(18,2);
+    DECLARE @tongDaTra DECIMAL(18,2);
+    DECLARE @laiPhaiTra DECIMAL(18,2);
+    DECLARE @deadline1Moi DATE;
+    DECLARE @deadline2Moi DATE;
+    DECLARE @trangThaiHopDong NVARCHAR(50);
+
+    -- Lấy thông tin hợp đồng
+    SELECT
+        @soTienGoc = soTienGoc,
+        @trangThaiHopDong = trangThai
+    FROM hopDong
+    WHERE hopDongId = @hopDongId;
+
+    IF @soTienGoc IS NULL
+    BEGIN
+        RAISERROR(N'Hop dong khong ton tai.', 16, 1);
+        RETURN;
+    END
+
+    IF @trangThaiHopDong = N'DaThanhLy'
+    BEGIN
+        RAISERROR(N'Hop dong da thanh ly, khong the gia han.', 16, 1);
+        RETURN;
+    END
+
+    -- Tính tổng nợ hiện tại
+    SET @tongNoHienTai = dbo.fnTinhTienHopDong(@hopDongId, CAST(GETDATE() AS DATE));
+
+    -- Tính tổng tiền đã trả
+    SELECT @tongDaTra = ISNULL(SUM(soTienTra), 0)
+    FROM lichSuThanhToan
+    WHERE hopDongId = @hopDongId;
+
+    -- Tạm xác định phần lãi phải trả để được gia hạn
+    -- Ở mức bài tập, xem lãi = tổng nợ hiện tại - gốc
+    SET @laiPhaiTra = @tongNoHienTai - @soTienGoc;
+
+    IF @laiPhaiTra < 0
+        SET @laiPhaiTra = 0;
+
+    -- Nếu khách trả chưa đủ lãi thì không cho gia hạn
+    IF @soTienKhachTra < @laiPhaiTra
+    BEGIN
+        RAISERROR(N'Khach chua thanh toan du tien lai de gia han hop dong.', 16, 1);
+        RETURN;
+    END
+
+    -- Ghi nhận thanh toán phục vụ audit log
+    INSERT INTO lichSuThanhToan (hopDongId, ngayThanhToan, soTienTra, nhanVienId, ghiChu)
+    VALUES (@hopDongId, GETDATE(), @soTienKhachTra, @nhanVienId, ISNULL(@ghiChu, N'Gia han hop dong'));
+
+    -- Tính deadline mới kể từ ngày hiện tại
+    SET @deadline1Moi = DATEADD(DAY, @soNgayGiaHanDeadline1, CAST(GETDATE() AS DATE));
+    SET @deadline2Moi = DATEADD(DAY, @soNgayGiaHanDeadline2, CAST(GETDATE() AS DATE));
+
+    -- Cập nhật hợp đồng sau khi gia hạn
+    UPDATE hopDong
+    SET
+        deadline1 = @deadline1Moi,
+        deadline2 = @deadline2Moi,
+        trangThai = N'DangVay',
+        ngayCapNhat = GETDATE(),
+        ghiChu = ISNULL(ghiChu, N'') + N' | Gia han hop dong'
+    WHERE hopDongId = @hopDongId;
+
+    SELECT
+        N'Gia han hop dong thanh cong.' AS thongBao,
+        @laiPhaiTra AS soTienLaiBatBuoc,
+        @soTienKhachTra AS soTienKhachDaTra,
+        @deadline1Moi AS deadline1Moi,
+        @deadline2Moi AS deadline2Moi;
+END;
 GO
-22.2. Xem hợp đồng
+```
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/3d31b6e9-5909-4b73-90fd-7bfc748c30a1" />
+Tạo sp Gia han hop dong
 
-SELECT * FROM hopDong;
+Ví dụ chạy thử
+
+```sql
+EXEC spGiaHanHopDong
+    @hopDongId = 1,
+    @soNgayGiaHanDeadline1 = 10,
+    @soNgayGiaHanDeadline2 = 20,
+    @soTienKhachTra = 450000,
+    @nhanVienId = 1,
+    @ghiChu = N'Khach xin gia han them ky moi';
 GO
-22.3. Xem tài sản
+```
 
-SELECT * FROM taiSan;
-GO
-22.4. Xem chi tiết hợp đồng - tài sản
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/21ef371b-17a0-4467-86f2-a7c61c3ccda4" />
 
-SELECT
-    hd.hopDongId,
-    kh.hoTen,
-    ts.tenTaiSan,
-    ts.loaiTaiSan,
-    ts.giaTriDinhGia,
-    ct.giaTriCamCo,
-    ts.trangThai
-FROM hopDong hd
-INNER JOIN khachHang kh ON hd.khachHangId = kh.khachHangId
-INNER JOIN chiTietHopDongTaiSan ct ON hd.hopDongId = ct.hopDongId
-INNER JOIN taiSan ts ON ct.taiSanId = ts.taiSanId;
-GO
-22.5. Xem lịch sử thanh toán
+###  Lịch sử hợp đồng (Audit Log) 
 
-SELECT
+#### Vấn đề nghiệp vụ
+
+Trong một số thiết kế CSDL đơn giản, người ta có xu hướng:
+- thêm một cột `soNoConLai` vào bảng `hopDong`
+- mỗi lần khách trả tiền thì UPDATE trực tiếp cột này
+
+Cách làm này **rất nguy hiểm** vì:
+- mất toàn bộ lịch sử giao dịch
+- không biết khách đã trả bao nhiêu lần, khi nào, ai thu
+- không thể đối soát nếu có tranh chấp
+- không thể tính lại công nợ tại bất kỳ thời điểm nào trong quá khứ
+
+#### Giải pháp: Audit Log
+
+Hệ thống này sử dụng **bảng `lichSuThanhToan` như một bảng audit log đầy đủ**.  
+Mỗi lần khách trả tiền, hệ thống **không cập nhật cột nào cả**, mà chỉ **thêm một dòng mới** vào bảng này.
+
+Bảng `lichSuThanhToan` lưu:
+- `hopDongId` - tham chiếu đến hợp đồng
+- `ngayThanhToan` - thời điểm thu tiền (có giờ phút)
+- `soTienTra` - số tiền khách trả trong lần này
+- `nhanVienId` - người trực tiếp thu tiền (có thể kiểm tra trách nhiệm)
+- `ghiChu` - ghi chú nghiệp vụ (ví dụ: "Trả lãi tháng 5", "Trả góp lần 3")
+
+#### Tại sao Audit Log lại quan trọng?
+
+**1. Truy xuất lịch sử đầy đủ**
+
+```sql
+SELECT 
     lt.thanhToanId,
-    lt.hopDongId,
     lt.ngayThanhToan,
     lt.soTienTra,
-    nv.hoTen AS tenNhanVien,
+    nv.hoTen AS nguoiThu,
     lt.ghiChu
 FROM lichSuThanhToan lt
-INNER JOIN nhanVien nv ON lt.nhanVienId = nv.nhanVienId;
-GO
-23. Kịch bản kiểm thử gợi ý
-23.1. Tạo hợp đồng mới
+INNER JOIN nhanVien nv ON lt.nhanVienId = nv.nhanVienId
+WHERE lt.hopDongId = 1
+ORDER BY lt.ngayThanhToan DESC;
+```
 
-EXEC spDangKyHopDongMoi
-    @hoTen = N'Nguyen Thi E',
-    @soDienThoai = '0901000005',
-    @canCuocCongDan = '001001000005',
-    @diaChi = N'TP HCM',
-    @soTienGoc = 9000000,
-    @deadline1 = '2026-05-18',
-    @deadline2 = '2026-05-28',
-    @ghiChuHopDong = N'Cam nhan vang',
-    @tenTaiSan = N'Nhan vang',
-    @loaiTaiSan = N'TrangSuc',
-    @giaTriDinhGia = 13000000,
-    @moTaTaiSan = N'Nhan vang 24K 1 chi';
-GO
-23.2. Tính tiền hợp đồng
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/4e1c6143-793e-4460-8dd3-e153bc100591" />
 
-SELECT dbo.fnTinhTienHopDong(1, '2026-05-15') AS tongTienHopDong1;
-GO
-23.3. Trả nợ từng phần
+Kết quả: thấy rõ khách đã trả mấy lần, khi nào, ai thu, bao nhiêu tiền.
 
-EXEC spXuLyTraNoTungPhan
-    @hopDongId = 1,
-    @soTienTra = 3000000,
-    @nhanVienId = 1,
-    @ghiChu = N'Khach thanh toan dot 3';
-GO
-23.4. Xem danh sách nợ xấu
+2. Tính tổng tiền đã trả bất kỳ lúc nào
 
-SELECT
-    kh.hoTen AS tenKhachHang,
-    kh.soDienThoai,
-    hd.soTienGoc,
-    DATEDIFF(DAY, hd.deadline1, CAST(GETDATE() AS DATE)) AS soNgayQuaHan,
-    dbo.fnTinhTienHopDong(hd.hopDongId, CAST(GETDATE() AS DATE)) AS tongTienPhaiTraHienTai,
-    dbo.fnTinhTienHopDong(hd.hopDongId, DATEADD(MONTH, 1, CAST(GETDATE() AS DATE))) AS tongTienPhaiTraSau1Thang
-FROM hopDong hd
-INNER JOIN khachHang kh ON hd.khachHangId = kh.khachHangId
-WHERE CAST(GETDATE() AS DATE) > hd.deadline1
-  AND dbo.fnTinhTienHopDong(hd.hopDongId, CAST(GETDATE() AS DATE)) > 0
-  AND hd.trangThai NOT IN (N'DaThanhToan', N'DaThanhLy');
-GO
+
+SELECT 
+    SUM(soTienTra) AS tongDaTra
+FROM lichSuThanhToan
+WHERE hopDongId = 1;
+
+<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/887beefc-64b9-433a-8d69-7b14919a592e" />
+
