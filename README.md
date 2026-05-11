@@ -83,6 +83,11 @@ Ví dụ:
 
 ---
 
+<img width="1467" height="827" alt="Untitled (2)" src="https://github.com/user-attachments/assets/fb18e038-067e-47fb-9108-f42e75bbf9b1" />
+
+Sơ đồ ERD 
+
+
 ## 4. Tạo cơ sở dữ liệu
 
 ```sql
