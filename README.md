@@ -1,4 +1,4 @@
-# QUẢN LÝ CẦM ĐỒ - THIẾT KẾ VÀ CÀI ĐẶT CƠ SỞ DỮ LIỆU
+# QUẢN LÝ CẦM ĐỒ 
 
 Họ và tên: Nguyễn Hữu Doan
 
@@ -268,19 +268,29 @@ GO
 Chèn dữ liệu mẫu
 
 17. Stored Procedure đăng ký hợp đồng mới
+18. 
 17.1. Phân tích logic
+    
 Khi tạo hợp đồng mới, hệ thống cần:
 
 Kiểm tra khách hàng đã tồn tại chưa theo canCuocCongDan
+
 Nếu chưa có thì thêm mới khách hàng
+
 Tạo hợp đồng mới
+
 Tạo tài sản mới
+
 Gắn tài sản vào hợp đồng
+
 Phiên bản dưới đây xử lý:
 
 1 khách hàng
+
 1 hợp đồng
+
 1 tài sản
+
 Có thể mở rộng sau này để hỗ trợ nhiều tài sản trong 1 lần gọi.
 
 17.2. Procedure
@@ -348,7 +358,7 @@ GO
 <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/2e671a25-e87f-4bcb-8005-f6af98d0863b" />
 
 17.3. Ví dụ gọi procedure
-
+```sql
 EXEC spDangKyHopDongMoi
     @hoTen = N'Vo Thi D',
     @soDienThoai = '0901000004',
@@ -363,28 +373,44 @@ EXEC spDangKyHopDongMoi
     @giaTriDinhGia = 15000000,
     @moTaTaiSan = N'Nhan 1 chi';
 GO
-
+```
 <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/4ac400e0-21b2-41cb-9d85-03e80c7c67d0" />
 
 18. Function tính tiền phải trả đến ngày bất kỳ
+
 18.1. Phân tích logic
+    
 Ta cần tính số tiền phải trả của hợp đồng tại một ngày cụ thể:
 
 Nếu ngayTinh <= deadline1:
+
 chỉ tính lãi đơn
+
 Nếu ngayTinh > deadline1:
+
 tính lãi đơn từ ngayLap đến deadline1
+
 sau đó lấy (gốc + lãi đơn) làm cơ sở tính lãi kép
+
 Sau cùng trừ đi:
+
 tổng số tiền khách đã thanh toán
+
 Công thức
+
 lãi suất ngày = 0.005
+
 lãi đơn:
+
 soTienGoc * 0.005 * soNgay
+
 lãi kép:
+
 (coSoLaiKep * POWER(1 + 0.005, soNgaySauDeadline1))
+
 18.2. Function
 
+```sql
 CREATE OR ALTER FUNCTION fnTinhTienHopDong
 (
     @hopDongId INT,
@@ -457,37 +483,52 @@ BEGIN
     RETURN @tongTien;
 END;
 GO
-
+```
 <img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/95ac3197-cd51-4f3c-861a-8fd38d78b918" />
 
 18.3. Ví dụ sử dụng function
 
+```sql
 SELECT dbo.fnTinhTienHopDong(1, '2026-05-09') AS tongTienPhaiTra;
 GO
 
 SELECT dbo.fnTinhTienHopDong(1, GETDATE()) AS tongTienHienTai;
 GO
-
+```
 <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/16eb48ac-384b-4da8-8843-93f30097e4b4" />
 
 
 
 19. Procedure xử lý trả nợ từng phần
+    
 19.1. Phân tích logic
+
 Khi khách mang tiền đến trả, hệ thống xử lý theo các bước:
 
 Kiểm tra hợp đồng có tồn tại không
+
 Nếu hợp đồng đã DaThanhLy thì từ chối thu tiền
+
 Tính tổng nợ hiện tại
+
 Ghi nhận khoản thanh toán mới
+
 Tính lại dư nợ
+
 Nếu đã trả hết:
+
 cập nhật hợp đồng thành DaThanhToan
+
 trả toàn bộ tài sản
+
 chuyển trạng thái tài sản thành DaTraKhach
+
 Nếu chưa trả hết:
+
 cập nhật hợp đồng thành DangTraGop
+
 trả về danh sách tài sản có thể hoàn trả cho khách
+
 19.2. Procedure
 
 ```sql
@@ -609,6 +650,7 @@ BEGIN
 END;
 GO
 ```
+
 <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/c382c93f-f5a0-4985-9c85-4beb7bbcc9c7" />
 
 19.3. Ví dụ gọi procedure
@@ -624,15 +666,21 @@ GO
 Gọi spXuLyTraNoTungPhan
 
 20. Query danh sách nợ xấu
+    
 20.1. Phân tích logic
+
 Nợ xấu là các hợp đồng:
 
 đã quá deadline1
-vẫn còn tiền phải trả
-chưa ở trạng thái DaThanhToan
-chưa ở trạng thái DaThanhLy
-20.2. Query
 
+vẫn còn tiền phải trả
+
+chưa ở trạng thái DaThanhToan
+
+chưa ở trạng thái DaThanhLy
+
+20.2. Query
+```sql
 SELECT
     kh.hoTen AS tenKhachHang,
     kh.soDienThoai,
@@ -646,7 +694,7 @@ WHERE CAST(GETDATE() AS DATE) > hd.deadline1
   AND dbo.fnTinhTienHopDong(hd.hopDongId, CAST(GETDATE() AS DATE)) > 0
   AND hd.trangThai NOT IN (N'DaThanhToan', N'DaThanhLy');
 GO
-
+```
 <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/16f6a1c1-3804-4d52-a123-eaffc8e5bc97" />
 Danh sách nợ xấu
 21. Trigger cập nhật trạng thái quá hạn và thanh lý
@@ -663,7 +711,9 @@ DELETE
 Vì vậy trong bài này, trigger được thiết kế để:
 
 mỗi khi có thao tác thêm/sửa trên bảng hopDong
+
 hệ thống sẽ kiểm tra và cập nhật trạng thái phù hợp
+
 Nếu muốn hoàn toàn tự động theo giờ/ngày trong thực tế, nên dùng thêm SQL Server Agent Job.
 
 21.2. Trigger cập nhật hợp đồng sang QuaHan
